@@ -1,0 +1,403 @@
+query Bitcoin {
+  bitquery {
+    bitcoin {
+      blocks(options: { limit: 1, desc: ["timestamp.iso8601"] }) {
+        height
+        timestamp {
+          iso8601
+        }
+      }
+    }
+  }
+}
+
+query GetLatestBlocks {
+    bitquery {
+  bitcoin {
+    blocks(options: {limit: 10, desc: ["height"]}) {
+      height
+      timestamp {
+        time(format: "%Y-%m-%d %H:%M:%S")
+      }
+      transactionCount
+      blockSize
+      blockWeight
+      difficulty
+    }
+  }
+  }
+}
+
+query ActiveNodes {
+  bitnodes {
+    snapshot {
+      totalNodes
+      timestamp
+      latestHeight
+      nodes
+      }
+    }
+  }
+
+query TransactionFee($network: BitqueryBitcoinNetwork!, $limit: Int!) {
+  bitquery {
+    bitcoin(network: $network) {
+      transactions(options: { desc: "date.date", limit: $limit }) {
+        date {
+          date
+        }
+        feeValueDecimal
+      }
+    }
+  }
+}
+
+query Blockchairapi_1 {
+  blockchairapi {
+    addressesByBalance(q: "balance(1000000000..100000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+query Blockchairapi_10 {
+  blockchairapi {
+    addressesByBalance(q: "balance(10000000000..1000000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_100 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100000000000..10000000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_1000 {
+  blockchairapi {
+    addressesByBalance(q: "balance(1000000000000..100000000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_10000 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100000000000000..1000000000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_100000 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100000000000000..10000000000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_01 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100000000..10000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(10000000..1000000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_0001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(1000000..100000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_00001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100000..10000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_000001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(10000..1000)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_0000001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(1000..100)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_00000001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(100..10)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_000000001 {
+  blockchairapi {
+    addressesByBalance(q: "balance(10..1)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query Blockchairapi_000000000 {
+  blockchairapi {
+    addressesByBalance(q: "balance(1..0)") {
+      context {
+        totalRows
+      }
+    }
+  }
+}
+
+query TransactionsAndAddresses {
+  bitquery {
+    bitcoin {
+      transactions {
+        count
+      }
+      inputs {
+        count(uniq: addresses)
+      }
+    }
+  }
+}
+
+
+  
+  query GetBlocks {
+  bitquery {
+    bitcoin {
+      blocks(
+        options: {desc: ["height"]},
+        date: {between: ["2024-02-18T00:00:00+0000", "2024-02-19T00:00:00+0000"]}
+      ) {
+        height
+        blockSize
+        transactionCount
+        timestamp {
+          iso8601
+        }
+      }
+    }
+  }
+}
+
+
+  query GetTransactions($gteq: Int!, $lteq: Int!) {
+  bitquery {
+    bitcoin {
+      transactions(options: {limit: 15}) {
+        block(height: {gteq: $gteq, lteq: $lteq}) {
+          height
+        }
+        feeValueDecimal
+        txSize
+      }
+    }
+  }
+  }
+
+query Mempool {
+  mempool {
+    countryNodeStats {
+      capacity
+      share
+      count
+      iso
+      name {
+        en
+      }
+    }
+  }
+}
+
+query MinerData($limit: Int!, $offset: Int!, $from: BitqueryISO8601DateTime, $till: BitqueryISO8601DateTime) {
+  bitquery{
+  bitcoin{
+    outputs(
+      options: { desc: "value", asc: "outputAddress.address", limit: $limit, offset: $offset }
+      time: { since: $from, till: $till }
+      txIndex: { is: 0 }
+      outputDirection: { is: mining }
+      outputScriptType: { notIn: ["nulldata", "nonstandard"] }
+    ) {
+     count(uniq: blocks)
+                outputAddress {
+                    annotation
+                    address
+                }
+                minimum(of: date)
+                maximum(of: date)
+                countBigInt(uniq: blocks)
+                value
+    }
+  }
+}
+}
+
+query AddressDetails($since: BitqueryISO8601DateTime, $till: BitqueryISO8601DateTime, $inputAddress: String, $outputAddress: String) {
+    bitquery {
+        bitcoin {
+            inputs(date: { since: $since, till: $till }, inputAddress: { is: $inputAddress }) {
+                count
+                maximum(of: date)
+                minimum(of: date)
+                value
+            }
+            outputs(date: { since: $since, till: $till }, outputAddress: { is: $outputAddress }) {
+                count
+                maximum(of: date)
+                minimum(of: date)
+                value
+            }
+        }
+    }
+}
+
+query GetDailyBlockCounts {
+    bitquery {
+        bitcoin {
+            blocks(options: {desc: "date.date", limit: 1900}) {
+                date {
+                    date
+                }
+                count
+            }
+        }
+    }
+}
+
+
+query GetLatestBlocksApi {
+    bitquery {
+  bitcoin {
+    blocks(options: {limit: 10, desc: ["height"]}) {
+      height
+      timestamp {
+        time(format: "%Y-%m-%d %H:%M:%S")
+      }
+      transactionCount
+      blockSize
+      blockWeight
+      difficulty
+    }
+  }
+  }
+}
+
+query BitcoinTransactions($current_date: BitqueryISO8601DateTime){
+    bitquery {
+      bitcoin {
+        transactions(
+          date: {is: $current_date}
+          options: {desc: "block.timestamp.iso8601", limit: 10}
+        ) {
+          block {
+            height
+            timestamp {
+              iso8601
+            }
+          }
+          hash
+          feeValue
+          feeValueDecimal
+          inputCount
+          inputCountBigInt
+          inputValueDecimal
+          txSize
+          txVsize
+          count
+        }
+      }
+    }
+}
+
+query BitcoinInputs($since: BitqueryISO8601DateTime){
+  bitquery {
+    bitcoin(network: bitcoin) {
+      transactions(options: {asc: "date.date"}, 
+        date: {since: $since}) {
+        date: date {
+          date(format: "%Y-%m-%d")
+        }        
+        inputCount: inputCount(calculate: sum)
+        feeValue: feeValue(calculate: sum)
+        total: feeValue(calculate: sum)
+      }
+      inputs(options: {asc: "date.date"}, 
+        date: {since: $since}) {
+        date: date {
+          date(format: "%Y-%m-%d")
+        }
+        count
+        value: value(calculate: sum)
+      }
+    }
+  }
+}
+
+query BitcoinAvg($since: BitqueryISO8601DateTime){
+  bitquery {
+    bitcoin(network: bitcoin) {
+      transactions(options: {asc: "date.date"}, 
+        date: {since: $since}) {
+        date: date {
+          date(format: "%Y-%m-%d")
+        }
+        feeValue: feeValue(calculate: average)
+      }
+    }
+  }
+}
